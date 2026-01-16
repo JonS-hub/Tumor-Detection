@@ -31,7 +31,6 @@ python app.py
 
 
 
-![1](https://github.com/user-attachments/assets/48fbdd59-12af-4242-917c-e095fb156191)
 
 
 
@@ -40,4 +39,5 @@ python app.py
 
 📊 Eğitim Süreci (Dataset & Training)
 Model, titizlikle etiketlenmiş MR veri setleri kullanılarak eğitilmiştir. Eğitim sürecinde modelin genelleme yeteneğini artırmak için veri artırma (augmentation) teknikleri uygulanmış ve last.pt ağırlık dosyası en iyi sonuç veren epoch verileriyle oluşturulmuştur.
+
 
