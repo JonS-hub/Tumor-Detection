@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tumor AI | Teşhis Paneli</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            color: #333;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .upload-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .file-input-wrapper {
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #2980b9; transform: scale(1.05); }
+
+        .btn-clear { color: var(--danger); font-size: 0.9rem; }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--accent);
+        }
+
+        .result-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .result-body { grid-template-columns: 1fr; }
+        }
+
+        .result-img img {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .info-panel h3 { margin-top: 0; color: var(--primary); }
+        
+        .detection-item {
+            background: var(--light);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .conf-badge {
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <i class="fas fa-brain"></i> Tumor Detection AI Analysis System
+</header>
+
+<div class="container">
+    <div class="upload-card">
+        <h2>Yeni Görüntü Analizi</h2>
+        <p>Analiz etmek istediğiniz MR görsellerini seçin (Çoklu seçim yapabilirsiniz)</p>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="file-input-wrapper">
+                <input type="file" name="files" multiple required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Analizi Başlat
+            </button>
+        </form>
+    </div>
+
+    {% if results %}
+        <div class="history-header">
+            <h2><i class="fas fa-history"></i> Analiz Geçmişi</h2>
+            <a href="/clear" class="btn-clear"><i class="fas fa-trash"></i> Geçmişi Temizle</a>
+        </div>
+
+        {% for res in results %}
+        <div class="result-card">
+            <div class="result-body">
+                <div class="result-img">
+                    <img src="{{ res.url }}" alt="Processed">
+                </div>
+                <div class="info-panel">
+                    <h3>{{ res.filename }}</h3>
+                    <p><strong>Tespit Sayısı:</strong> {{ res.tumor_count }}</p>
+                    <hr>
+                    <div class="detections-list">
+                        {% if res.detections %}
+                            {% for det in res.detections %}
+                            <div class="detection-item">
+                                <span>Tümör #{{ loop.index }}</span>
+                                <span class="conf-badge">%{{ det.confidence }} Doğruluk</span>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p style="color: var(--success);">Anomali tespit edilmedi.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+</body>
+</html>
